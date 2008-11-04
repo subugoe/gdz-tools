@@ -1,0 +1,17 @@
+#
+# Konfigurationsdatei fuer TIFFWRITER.pl
+#
+# - muss in dem Verzeichnis liegen, in dem sich auch die TIFF-Images befinden
+# - gibt an, welche TIFF-Tags überschrieben werden sollen.
+#
+# möglich TIFF-Tags (Gross/Kleinschreibung achten):
+#  Artist
+#  Documentname
+#
+#
+#CheckNames=filename
+#Artist=NSUB GÖ
+#Documentname=PPN123456789
+#ImageDescription=<test here>
+#ResolutionX=200
+#ResolutionY=203

@@ -1,0 +1,122 @@
+LIESMICH zu tiffwriter.pl
+beschreibt Version 0.30 (Februar 2002)
+
+1.0 Anwendungszweck:
+
+Aktualisieren von Daten im Header von TIFF-Dateien. Zur Zeit können 
+automatisch folgende TIFF-Tags aktualisiert werden:
+
+- Artist (Tag-Nummer 315)
+- Documentname (Tag-Nummer 269)
+- PageName (Tag-Nummer 285)
+- ImageDescription (Tag-Nummer 270)
+- ResolutionX (Tag-Nummer 282) - nur Zahlenwerte erlaubt
+- ResolutionY (Tag-Nummer 283) - nur Zahlenwerte erlaubt
+
+Diese Felder werden in der Regel beim Scannen durch ProScan Book 
+ausgefüllt. Nachträgliche Korrekturarbeiten (einfügen von Lücken oder 
+Löschen von doppelt gescannten Seiten) können jedoch ein reindexieren 
+notwendig machen.
+
+Da ProScan Book beim Scannen die jeweilige Kopfposition nicht kennt; bzw. auf die manuell einzugebenen Werte im Scanmenu zurückgreift, kann die tatsächliche Auflösung von der im TIFF-Image eingetragenen Auflösung abweichen. Zur Korrektur der Werte kann TiffWriter die Werte aus "ResolutionX" und "ResolutionY" als Auflösungswerte in X bzw Y-Richtung eintragen. Für diese Werte sind nur Zahlenwerte erlaubt. Eine Änderung der Einheit der Auflösung (cm / zoll) ist nicht möglich.
+
+Ein weiteres Anwendungsfeld ist das nachträgliche indexieren von Images, die ausserhalb der ProScan-Booksoftware erstellt wurden - bspw. mittels Photoshop etc. Diese Images verfügen in aller Regel nicht über entsprechende Metadaten im Header.
+
+2.0 Arbeitsweise:
+
+2.1 Überprüfung der Images
+
+Zunächst werden alle Images kurz überprüft. Fehlen Images im Imgeset und 
+befinden sich Images mit ungültigen Dateinamen in dem Imageverzeichnis, 
+werden diese angemeckert.
+Ebenso gibt es einen Hinweis, wenn die Tiff-Tags für Artist, ImageDescription 
+und DocumentName nicht ausgefüllt sind.
+
+2.2. Setzen der Metadateninformationen
+
+Mittels der Datei tiffwriter.conf, die sich Image-Verzeichnis befinden muss, 
+könne neben der Seitennummer (PageName) auch folgende Header-Tags gesetzt 
+werden:
+- Artist (Tag-Nummer 315)
+- DocumentName (Tag-Nummer 269)
+- ImageDescription (Tag-Nummer 270)
+- ResolutionX (Tag-Nummer 282)
+- ResolutionY (Tag-Nummer 283)
+
+Die Datei tiffwriter.conf ist wie folgt aufgebaut:
+Tagname=Tagwert
+Als Tagname sind oben aufgeführte Tags erlaubt (Gross/Kleinschreibung ist wichtig). Der Tagname muss immer am Anfang einer jeden Zeile stehen. Leerzeilen sind nicht erlaubt.
+Um Kommentare anzufügen oder Kommandos temporär nicht einzusetzen können Remarks gesetzt werden. Als Remarkzeichen dient das "#". Remarks sind nur für komplette Zeilen erlaubt, d.h. die Zeile muss mit dem "#" bgeinnen.
+
+Die Tags "ResolutionX" und "ResolutionY" dürfen nur Zahlenwerte (ganzzahlig) enthalten. Anderen Zeichen führen zu einer Fehlermeldung.
+
+2.3 Seitennummerierung
+
+Die Seitennummer wird immer automatisch gesetzt und aus dem Dateinamen 
+ermittelt. Daher gibt es auch Hinweise auf falsche bzw. nicht den Konventionen 
+entsprechenden Dateinamen (d.h. Dateinamen die von 00000001.tif abweichen).
+
+Ein Beispiel-Datei von tiffwriter.conf liegt im TIFFWRITER Verzeichnis. Bei 
+der Anwendung ist genaustens auf Leerzeichen sowie Gross/Kleinschreibung zu 
+achten. Zu Beginn jedes Durchlaufes zeigt tiffwriter welche Tags geschrieben 
+werden. Hier kann der Benutzer überprüfen, ob alle Werte aus der "tiffwriter.conf"-Datei richtig eingelesen wurden. 
+
+
+3.0 Voraussetzung:
+
+- Perl 5.x (getestet nur mit Perl 5.6.1) (ActivePerl)
+- PerlModul Term::ReadKey; auf der Windows Plaattform bspw. mittels des ppm 
+als TermReadKey zu installieren
+
+
+4.0 Anwendung:
+
+Zu dem eigentlichen Perl_Skript tiffwriter.pl gibt es eine Batch-Datei 
+tiffwriter.bat. Diese Batch-Datei ruft das Perl-Skript auf und übergibt die 
+Parameter an das Perl-Skript. Als einziger Parameter ist zur Zeit der 
+Image-Verzeichnis erlaubt.
+In der praktischen Anwendung ist daher nur das Imageverzeichnis dessen 
+TIFF-Images aktualisiert werden sollen auf die Batch.Datei zu ziehen.
+Alternativ kann tiffwriter.pl auch direkt von der Kommdozeile aufgerufen 
+werden, wobei dann der Pfad als zusätzlicher Parameter übergeben werden muss.
+
+
+5.0 To do:
+
+Bessere Fehlermeldungen; gerade dann, wenn keine TIFF-Images im 
+Verzeichnis liegen oder Images korrupt sind.
+Püfen, ob das Programm auch mit TIFF, die eine MOTOROLA-Byte-Order besitzen anständig funktioniert.
+
+History:
+
+Version 0.30: Der TIFFWriter kann nun auch die Auflösung neu schreiben. Dazu wurden zwei neue Commandos die die Datei tiffwriter.conf eingeführt.
+              ResolutionX
+	      ResolutionY
+              Für die Implementierung waren grössere Änderungen an den unterliegenden Klassen notwendig, da die Auflösung als rationale Zahl gespeichert wird (RATIONAL).
+
+Version 0.23: Kleinere Fehlerbehebung: Beim einlesen der Konfigurationsdatei wurde immer das letzte Zeichen einer Zeile gelöscht; jetzt wird nur das letzte Zeichen gelöscht, wenn es sich um eine NewLine-Zeichen handelt (chop gegen chomp ersetzt).
+              Ferner musste in der Methode "CalculateCount" eine Zeile auskommentiert werden, die bei ASCII-Tags die Länge automatisch um eins erhöht hatte - angenommen wurde dies, aufgrund des NUL-Bytes (welches eigentlich nicht notwendig ist, da die Länge im TIFF-Tag (der Count) ja extra gespeichert wird. Dies hat zur Folge, dass das TIFF-Kit die ASCII-Werte immer um ein Zeichen zu wenig anzeigt. Dies scheint ein Problem des TIFF-Kits zu sein, da es scheinbar die richtige Länge ausliest und anzeigt; jedoch nicht alle Zeichen. Anere Programm, wie bspw. tiffinfo aus der TIFFLIB (von SGI) stellen den kompletten Inhalt eines Tags dar.
+              Es wurde überprüft, warum im TIFFKIT nur die ersten 300 Zeichen eines Tags angezeigt werden. Dies ist kein Problem des TIFFwriters. Scheinbar kann das TIFFKit nicht mehr Zeichen darstellen. TiffWriter schreibt definitiv alle Zeichen.  
+
+Version 0.22: Bugbehebung: Unter bestimmten Umständen wurden die Offset-Werte falsch errechnet. Dies ist jedoch nur bei ASCII-Tags (also Typ-2) Tags vorgekommen. Dies hatte die Auswirkung, dass teilweise vor dem eigentlich Tag-Inhalt vereinzelt ein Zeichen auftauchte. Dieses Problem wurde behoben.
+
+Version 0.21: Dateinamensortierung erneut überarbeitet. 
+Intern wurde die Behandlung einzelner TIFF-Dateien optimiert. Jetzt wird nicht mehr für das Lesen oder Schreiben eines jeden Tags die Datei erneut geöffnet. Dies bringt erheblichen Geschwindigkeitsgewinn mit sich. 
+Ferner wurden einige interne Anpassungen vorgenommen, die die Portabilität erhöhen sollte. Trotzdem läuft das Skript immer noch nicht unter Mac OS (classic).
+Wird ein Tag neu geschrieben (über tiffwriter.conf so konfiguriert), wird das Fehlen des Tags nicht mehr angemeckert. 
+
+ 
+Version 0.12: Sortiert Dateinamen; soll so unberechtigte Fehlermeldungen
+vermeiden, die irrtümlich fehlende Seiten anmeckern.
+Ausserdem wird nun TIFF-Tag 271 und 305 bei jedem Image geschrieben (nicht konfigurierbar) 
+
+
+
+Version 0.11: Jetzt kann auch ImageDescription optional geschrieben werden.
+
+Version 0.1: erste Version: Schreiben von Motorola-TIFFs gerade bei den 
+Typen SHORT LONG und RATIONAL nicht ausführlich getestet; bei RATIONAL scheint 
+das Auslesen des Tags fehlerbehaftet zu sein (nur bei Motorla-TIFFs).
+
+
+

@@ -1,0 +1,48 @@
+GDZ-Tools - Werkzeugsamlung für einfache Aufgaben
+
+Installation & Konfiguration
+	Die Dateien müssen in einen bekannten Ordner (z.B. 
+	C:\Programme\GDZ-Tools\, wenn nicht vorhanden -> anlegen ;-))
+	kopiert werden. Die Dateien mit der Endung .bat können z.B. auf den
+	Desktop gelegt werden. Falls die Dateien nicht am oben genannten
+	Ordner abgelegt wurde, muss in "config.bat" die Variable
+	"GDZTOOLS_PATH entsprechend angepasst werden.
+
+tiffwriter - Einfaches Tool um TIFF Header zu bearbeiten
+
+	Benutzung
+		Siehe Dokumentation im Verzeichnis "docs".
+
+
+sort - Einfaches Tool um Bilddateien nach Farbtiefe zu sortieren
+
+	Benutzung
+		Am Einfachsten kann das Programm per "Drag and Drop" benutzt werden.
+		Dafür muss einfach das zu sortierende Verzeichnis auf "sort.bat"
+		gezogen werden. Es kann auch über die Kommandozeile gestartet
+		werden. Als Argument wird ein Verzeichnisname erwartet.
+
+order - Einfaches Tool um SW- und Grauscans zusammenzuführen.
+
+	Benutzung
+		Am Einfachsten kann das Programm per "Drag and Drop" benutzt werden.
+		Dafür muss einfach das zu sortierende Verzeichnis auf "order.bat"
+		gezogen werden. Es kann auch über die Kommandozeile gestartet
+		werden. Als Argument wird ein Verzeichnisname erwartet.
+
+
+multiply - Einfaches Tool zum multiplizieren von Dateien
+
+
+	Benutzung
+		Am Einfachsten kann das Programm per "Drag and Drop" benutzt werden.
+		Dafür muss einfach die zu multiplizierende Datei auf "multiply.bat"
+		gezogen werden. Danach erscheint ein Fenster das nach der Zahl der
+		anzufertigenden Kopien fragt. Es kann auch über die Kommandozeile
+		gestartet werden. Als Argument wird ein Dateiname erwartet, die
+		Anzahl der Kopien wird interaktiv abgefragt.
+
+
+Bekannte Fehler
+	Es wurde nicht getestet ob das Programm mit einem relativen Pfadnamen
+	korrekt funktioniert oder ob es portabel ist.

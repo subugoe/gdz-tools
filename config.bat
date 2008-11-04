@@ -1,0 +1,2 @@
+SET PERL_BIN=perl
+SET GDZTOOLS_PATH=C:\Programme\GDZ-Tools
