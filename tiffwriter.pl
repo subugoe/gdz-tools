@@ -15,6 +15,7 @@ use Term::ReadLine;
 
 use GDZ::TIFFFile;
 use GDZ::TIFFTag;
+use GDZ::lib;
 
 
 my $dirSep = '/';  # assume Unix
@@ -25,6 +26,7 @@ if ($Config{'osname'}=~/^macos/i ) {
 	$dirSep=':';
 }
 
+my $VERSION = "0.35";
 
 my $tiffheaderwriter="";
 my @entries=();             # files
@@ -39,8 +41,8 @@ my $updateresolutionx=undef;
 my $updateresolutiony=undef;
 my $checkfornames=undef;
 
-	my @pagearray=();
-	my $pagenumber=0;
+my @pagearray=();
+my $pagenumber=0;
 
 my $basedir=$ARGV[0];
 
@@ -48,15 +50,16 @@ if (substr($basedir,length($basedir)-1,1) eq $dirSep) {  # delete last char, if 
 	$basedir=substr($basedir,0,length($basedir)-1);
 }
 
-print "\n\n\n\n\n\n\n";
+print "\n\n\n";
 print "______________________________________________________\n";
 print "|                                                    |\n";
 print "|          Updating TIFF-Header information          |\n";
 print "|                                                    |\n";
-print "|             version 0.34, May 2007                 |\n";
+print "|            version 0.35, November 2008             |\n";
 print "|                                                    |\n";
 print "| (C) GDZ / Goettingen State and University Library  |\n";
-print "| Info/bugreports: enders\@mail.sub.uni-goettingen.de |\n";
+print "|           Original author: Markus Enders           |\n";
+print "|   Info/bugreports: mahnke\@sub.uni-goettingen.de    |\n";
 print "|                                                    |\n";
 print "______________________________________________________\n";
 print "OS:".$Config{'osname'}."\n";
@@ -185,6 +188,7 @@ foreach my $tifffile (@tifffiles) {
 
 	$pagearray[$pagenumber]=$pagenumber;
 
+	#TODO: This is evil
 	if ($pagenumber<10) {$pagenumber_str="|0000".$pagenumber."||";}
 	elsif ($pagenumber<100) {$pagenumber_str="|000".$pagenumber."||";}
 	elsif ($pagenumber<1000) {$pagenumber_str="|00".$pagenumber."||";}
@@ -265,7 +269,7 @@ foreach my $tifffile (@tifffiles) {
 		while(substr($pagenumber,0,1) eq "0"){
 			$pagenumber=substr($pagenumber,1,length($pagenumber)-1); # delete the first zero
 		} 
-	
+	#TODO: make this a helper function
 		if ($pagenumber<10) {$pagenumber_str="|0000".$pagenumber."||";}
 		elsif ($pagenumber<100) {$pagenumber_str="|000".$pagenumber."||";}
 		elsif ($pagenumber<1000) {$pagenumber_str="|00".$pagenumber."||";}
@@ -319,57 +323,6 @@ my $prompt = "\nZeilenschalter (Return) zum beenden druecken... ";
 $term->readline($prompt);
 
 exit 0;
-
-sub GetDocumentName{
-	my ($myfile)=@_;
-	
-	my $myTag=$myfile->GetTag("269");
-	if (defined $myTag) {
-		return $myTag->GetValue()
-	}
-	return undef;
-}
-
-sub GetImageDesc{
-	my ($myfile)=@_;
-	
-	my $myTag=$myfile->GetTag("270");
-	if (defined $myTag) {
-		return $myTag->GetValue();
-	}
-	return undef;
-}
-
-
-sub GetArtist{
-	my ($myfile)=@_;
-
-	my $myTag=$myfile->GetTag("315");
-	if (defined $myTag) {
-		return $myTag->GetValue();
-	}
-	return undef;
-}
-
-sub GetXResolution{
-	my ($myfile)=@_;
-
-	my $myTag=$myfile->GetTag("282");
-	if (defined $myTag) {
-		return $myTag->GetValue();
-	}
-	return undef;
-}
-
-sub GetYResolution{
-	my ($myfile)=@_;
-
-	my $myTag=$myfile->GetTag("283");
-	if (defined $myTag) {
-		return $myTag->GetValue();
-	}
-	return undef;
-}
 
 sub WriteTag{
 	my ($myfile,$tag,$value)=@_;

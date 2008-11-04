@@ -1,5 +1,57 @@
 #/usr/bin/perl -w
 
+
+sub GetDocumentName{
+	my ($myfile)=@_;
+	
+	my $myTag=$myfile->GetTag("269");
+	if (defined $myTag) {
+		return $myTag->GetValue()
+	}
+	return undef;
+}
+
+sub GetImageDesc{
+	my ($myfile)=@_;
+	
+	my $myTag=$myfile->GetTag("270");
+	if (defined $myTag) {
+		return $myTag->GetValue();
+	}
+	return undef;
+}
+
+
+sub GetArtist{
+	my ($myfile)=@_;
+
+	my $myTag=$myfile->GetTag("315");
+	if (defined $myTag) {
+		return $myTag->GetValue();
+	}
+	return undef;
+}
+
+sub GetXResolution{
+	my ($myfile)=@_;
+
+	my $myTag=$myfile->GetTag("282");
+	if (defined $myTag) {
+		return $myTag->GetValue();
+	}
+	return undef;
+}
+
+sub GetYResolution{
+	my ($myfile)=@_;
+
+	my $myTag=$myfile->GetTag("283");
+	if (defined $myTag) {
+		return $myTag->GetValue();
+	}
+	return undef;
+}
+
 sub GetBitsPerSample {
 	my ($myfile)=@_;
 
@@ -89,5 +141,6 @@ sub fill {
 	}
 	return $return;
 }
+
 
 return 1;
