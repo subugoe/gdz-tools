@@ -45,6 +45,7 @@ my @pagearray=();
 my $pagenumber=0;
 
 my $basedir=$ARGV[0];
+my $silent = $ARGV[1];
 
 if (substr($basedir,length($basedir)-1,1) eq $dirSep) {  # delete last char, if diretory seperator
 	$basedir=substr($basedir,0,length($basedir)-1);
@@ -80,20 +81,24 @@ if ((defined $updateresolutionx)&&($updateresolutionx ne "")) {
 	print "          Resolution - x (282)\n          \"".$updateresolutionx."\"\n";
 	if ($updateresolutionx eq "!!FEHLER!!") {
 		print "\n* FEHLER: Falscher Wert fuer X-Aufloesung; vermutl. kein Zahlenwert\n";
-		my $term = new Term::ReadLine 'exit';
-		my $prompt = "\nZeilenschalter (Return) zum beenden druecken... ";
-		$term->readline($prompt);
-		exit 0;
+		if ($silent eq "") {
+			my $term = new Term::ReadLine 'exit';
+			my $prompt = "\nZeilenschalter (Return) zum beenden druecken... ";
+			$term->readline($prompt);
+		}
+		exit 1;
 	}
 }
 if ((defined $updateresolutiony)&&($updateresolutiony ne "")) {
 	print "          Resolution - y (283)\n          \"".$updateresolutiony."\"\n";
 	if ($updateresolutiony eq "!!FEHLER!!") {
 		print "\n* FEHLER: Falscher Wert fuer Y-Aufloesung; vermutl. kein Zahlenwert\n";
-		my $term = new Term::ReadLine 'exit';
-		my $prompt = "\nZeilenschalter (Return) zum beenden druecken... ";
-		$term->readline($prompt);
-		exit 0;
+		if ($silent eq "") {
+			my $term = new Term::ReadLine 'exit';
+			my $prompt = "\nZeilenschalter (Return) zum beenden druecken... ";
+			$term->readline($prompt);
+		}
+		exit 2;
 	}
 }
 
@@ -102,9 +107,11 @@ print "\n";
 if (!defined $basedir) {
 	print "Kein Verzeichnis angegeben :-(\n";
 	
-	my $term = new Term::ReadLine 'exit';
-	my $prompt = "\nZeilenschalter (Return) zum beenden druecken... ";
-	$term->readline($prompt);
+	if ($silent eq "") {
+		my $term = new Term::ReadLine 'exit';
+		my $prompt = "\nZeilenschalter (Return) zum beenden druecken... ";
+		$term->readline($prompt);
+	}
 
 	exit -2;
 }else {
@@ -120,9 +127,11 @@ eval {
 if ($@) {
 	# directory not available
 	print "Verzeichnis: ".$basedir." nicht gefunden\n";
-	my $term = new Term::ReadLine 'exit';
-	my $prompt = "\nZeilenschalter (Return) zum beenden druecken... ";
-	$term->readline($prompt);
+	if ($silent eq "") {
+		my $term = new Term::ReadLine 'exit';
+		my $prompt = "\nZeilenschalter (Return) zum beenden druecken... ";
+		$term->readline($prompt);
+	}
 
 	exit -1;
 }
@@ -318,9 +327,11 @@ foreach my $tifffile (@tifffiles) {
 
 print "Geschafft!";
 
-my $term = new Term::ReadLine 'exit';
-my $prompt = "\nZeilenschalter (Return) zum beenden druecken... ";
-$term->readline($prompt);
+if ($silent eq "") {
+	my $term = new Term::ReadLine 'exit';
+	my $prompt = "\nZeilenschalter (Return) zum beenden druecken... ";
+	$term->readline($prompt);
+}
 
 exit 0;
 
